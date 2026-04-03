@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md. Zahid Hasan - Digital vCard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #1e3a8a; 
+            --accent: #38bdf8; 
+            --success: #16a34a; 
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --bg-page: #f1f5f9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-page);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 15px;
+        }
+
+        /* The Main Card */
+        .vcard-wrapper {
+            max-width: 360px;
+            width: 100%;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 12px 12px 24px rgba(30, 58, 138, 0.1), -12px -12px 24px rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px; 
+            background-color: #ffffff; 
+        }
+
+        .vcard-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            height: 120px;
+            border-radius: 0 0 50% 50% / 0 0 20px 20px;
+        }
+
+        .profile-pic-container {
+            text-align: center;
+            margin-top: -65px; 
+            position: relative;
+            z-index: 10;
+        }
+
+        .profile-pic {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--white);
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.1), -6px -6px 12px rgba(255,255,255,0.6);
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 3rem;
+            margin: 0 auto;
+        }
+        .profile-pic img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover;}
+
+        .verified-badge {
+            position: absolute;
+            bottom: 5px;
+            right: calc(50% - 60px);
+            background: var(--success);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--white);
+            font-size: 0.8rem;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .vcard-identity { text-align: center; padding: 15px 20px 10px; }
+        .vcard-name { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
+        .vcard-title {
+            font-size: 0.95rem; font-weight: 500; color: var(--primary); margin-top: 5px;
+            text-transform: uppercase; letter-spacing: 1px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;
+        }
+        .vcard-company { font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.4; }
+
+        /* Visible Contact Details */
+        .contact-details-list {
+            padding: 0 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .contact-row {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.02), inset -2px -2px 4px rgba(255,255,255,0.5);
+        }
+        .contact-icon-box {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 12px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.08);
+            font-size: 0.85rem;
+        }
+        .contact-text-box { flex-grow: 1; text-align: left;}
+        .contact-label { font-size: 0.65rem; color: var(--text-light); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        /* Copyable Value Styling */
+        .contact-value { 
+            font-size: 0.9rem; font-weight: 700; color: var(--text-dark); margin-top: 1px; 
+            cursor: pointer; display: inline-block; padding: 2px 0; transition: color 0.2s;
+        }
+        .contact-value:active { color: var(--primary); }
+        .contact-value i { color: #cbd5e1; margin-left: 5px; transition: color 0.3s;}
+
+        /* Action Buttons */
+        .action-buttons { display: flex; justify-content: center; gap: 12px; padding: 0 20px; margin-bottom: 20px; }
+        .action-btn {
+            flex: 1; text-align: center; text-decoration: none; padding: 10px; border-radius: 10px;
+            color: var(--white); font-weight: 600; font-size: 0.75rem; display: flex; flex-direction: column;
+            align-items: center; gap: 5px; box-shadow: 4px 4px 10px rgba(0,0,0,0.1), -4px -4px 10px rgba(255,255,255,0.8);
+            transition: 0.2s;
+        }
+        .action-btn:hover { transform: scale(0.97); box-shadow: inset 4px 4px 10px rgba(0,0,0,0.1); }
+        .action-btn i { font-size: 1.1rem; }
+        .btn-call { background: var(--primary); }
+        .btn-wa { background: var(--success); }
+        .btn-mail { background: #334155; }
+
+        .save-contact-area { padding: 0 20px; margin-bottom: 25px; }
+        .btn-save {
+            width: 100%; background: linear-gradient(135deg, #1e3a8a 0%, #38bdf8 100%); color: var(--white);
+            border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;
+            box-shadow: 0 8px 16px rgba(30, 58, 138, 0.2), inset 0 2px 4px rgba(255,255,255,0.3);
+        }
+
+        .links-section { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .link-item {
+            display: flex; align-items: center; padding: 12px 15px; background: #f8fafc; border: 1px solid #e2e8f0;
+            border-radius: 10px; text-decoration: none; box-shadow: 4px 4px 8px rgba(0,0,0,0.05), -4px -4px 8px rgba(255,255,255,0.5);
+        }
+        .link-icon-circle {
+            width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin-right: 15px; color: var(--white); font-size: 1rem; box-shadow: 4px 4px 8px rgba(0,0,0,0.1);
+        }
+        .link-text { flex-grow: 1; }
+        .link-title { font-size: 0.9rem; font-weight: 600; color: var(--text-dark);}
+        .link-subtitle { font-size: 0.75rem; color: var(--text-light); margin-top: 1px;}
+        .link-arrow { color: #cbd5e1; font-size: 0.9rem;}
+        .icon-linkedin { background: #0077b5; }
+        .icon-fb { background: #1877f2; }
+        .icon-shop { background: #ea580c; } 
+
+        .vcard-footer { text-align: center; padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; font-size: 0.8rem; color: var(--text-light); }
+
+        /* Tools / Download Buttons Section */
+        .tools-container {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .btn-download {
+            width: 100%;
+            background: #0284c7; 
+            color: var(--white);
+            border: none;
+            padding: 15px 10px;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(2, 132, 199, 0.3);
+            transition: 0.3s;
+        }
+        .btn-download:hover { background: #0369a1; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4); }
+
+        /* Toast Notification Styling */
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="vcard-wrapper" id="vcardElement">
+        
+        <div class="vcard-header"></div>
+
+        <div class="profile-pic-container">
+            <div class="profile-pic" id="profilePic">
+                <img src="profile.jpg" alt="Md. Zahid Hasan" onerror="handleImageError()">
+                <div class="verified-badge" title="Verified Professional"><i class="fas fa-check"></i></div>
+            </div>
+        </div>
+
+        <div class="vcard-identity">
+            <h1 class="vcard-name">Md. Zahid Hasan</h1>
+            <p class="vcard-title">Deputy Manager (Admin)</p>
+            <p class="vcard-company">Alliance Consortium Ltd.</p>
+        </div>
+
+        <div class="contact-details-list">
+            <div class="contact-row">
+                <div class="contact-icon-box"><i class="fas fa-mobile-alt"></i></div>
+                <div class="contact-text-box">
+                    <div class="contact-label">Mobile</div>
+                    <div class="contact-value" onclick="copyToClipboard('01711183109', this)" title="Tap to copy">
+                        +880 1711-183109 <i class="far fa-copy"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-row">
+                <div class="contact-icon-box"><i class="fas fa-phone"></i></div>
+                <div class="contact-text-box">
+                    <div class="contact-label">Office</div>
+                    <div class="contact-value" onclick="copyToClipboard('01733369668', this)" title="Tap to copy">
+                        +880 1733-369668 <i class="far fa-copy"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-row">
+                <div class="contact-icon-box"><i class="fas fa-envelope"></i></div>
+                <div class="contact-text-box">
+                    <div class="contact-label">Email</div>
+                    <div class="contact-value" onclick="copyToClipboard('zahidhasan1118@gmail.com', this)" title="Tap to copy">
+                        zahidhasan1118@gmail.com <i class="far fa-copy"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="tel:+8801711183109" class="action-btn btn-call">
+                <i class="fas fa-phone-alt"></i> Call
+            </a>
+            <a href="https://wa.me/8801711183109" class="action-btn btn-wa" target="_blank">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+            <a href="mailto:zahidhasan1118@gmail.com" class="action-btn btn-mail">
+                <i class="fas fa-envelope"></i> Email
+            </a>
+        </div>
+
+        <div class="save-contact-area">
+            <a href="tel:+8801733369668" class="btn-save">
+                <i class="fas fa-user-plus"></i> Save to Contacts
+            </a>
+        </div>
+
+        <div class="links-section">
+            <a href="https://linkedin.com/in/zahidhasan1118" target="_blank" class="link-item">
+                <div class="link-icon-circle icon-linkedin"><i class="fab fa-linkedin-in"></i></div>
+                <div class="link-text">
+                    <div class="link-title">Professional Network</div>
+                    <div class="link-subtitle">linkedin.com/in/zahidhasan1118</div>
+                </div>
+                <div class="link-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <a href="https://www.facebook.com/zahidhasan1118" target="_blank" class="link-item"> 
+                <div class="link-icon-circle icon-fb"><i class="fab fa-facebook-f"></i></div>
+                <div class="link-text">
+                    <div class="link-title">Connect on Facebook</div>
+                    <div class="link-subtitle">facebook.com/zahidhasan1118</div>
+                </div>
+                <div class="link-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <a href="https://www.acharkingbd.com" target="_blank" class="link-item"> 
+                <div class="link-icon-circle icon-shop"><i class="fas fa-globe"></i></div>
+                <div class="link-text">
+                    <div class="link-title">Achar King (Website)</div>
+                    <div class="link-subtitle">www.acharkingbd.com</div>
+                </div>
+                <div class="link-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+        </div>
+
+        <div class="vcard-footer">
+            <i class="fas fa-map-marker-alt"></i> Nazipur, Naogaon-6540, Bangladesh
+        </div>
+    </div>
+    
+    <div class="tools-container">
+        <button class="btn-download" onclick="downloadPNG()">
+            <i class="fas fa-download"></i> Download vCard
+        </button>
+    </div>
+
+    <div id="toast">Copied to clipboard!</div>
+
+    <script>
+        // Handle Image Fallback
+        function handleImageError() {
+            const profilePicDiv = document.getElementById('profilePic');
+            profilePicDiv.querySelector('img').remove();
+            profilePicDiv.innerHTML += '<i class="fas fa-user-tie" style="animation: pulse 1.5s infinite;"></i>';
+            profilePicDiv.innerHTML += '<div class="verified-badge" title="Verified Professional"><i class="fas fa-check"></i></div>';
+        }
+
+        // Copy text to clipboard
+        function copyToClipboard(text, element) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show Toast Notification
+                const toast = document.getElementById("toast");
+                toast.className = "show";
+                setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 2500);
+
+                // Change icon temporarily to checkmark
+                const icon = element.querySelector('i');
+                if(icon) {
+                    icon.className = "fas fa-check";
+                    icon.style.color = "var(--success)";
+                    setTimeout(() => {
+                        icon.className = "far fa-copy";
+                        icon.style.color = "#cbd5e1";
+                    }, 2500);
+                }
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Convert Card to PNG and Download
+        function downloadPNG() {
+            const card = document.getElementById('vcardElement');
+            const originalBoxShadow = card.style.boxShadow;
+            
+            card.style.boxShadow = 'none'; 
+            
+            html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Md_Zahid_Hasan_vCard.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                card.style.boxShadow = originalBoxShadow;
+            });
+        }
+    </script>
+
+</body>
+</html>
