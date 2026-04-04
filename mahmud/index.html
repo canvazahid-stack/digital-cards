@@ -15,94 +15,105 @@
             --white: #ffffff; --bg-page: #f1f5f9;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif; background-color: var(--bg-page); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 5px 10px; }
-        .vcard-wrapper { max-width: 350px; width: 100%; background: var(--white); border-radius: 20px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05); overflow: hidden; position: relative; margin-bottom: 10px; background-color: #ffffff; }
-        .vcard-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); height: 90px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
-        .profile-pic-container { text-align: center; margin-top: -50px; position: relative; z-index: 10; }
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--white); box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1); background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 2.2rem; margin: 0 auto; overflow: hidden; }
-        .profile-pic img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .verified-badge { position: absolute; bottom: 2px; right: calc(50% - 45px); background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); z-index: 15; }
-        .vcard-identity { text-align: center; padding: 10px 15px 5px; }
-        .vcard-name { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-        .vcard-title { font-size: 0.75rem; font-weight: 700; color: var(--accent); margin-top: 2px; text-transform: uppercase; }
-        .vcard-company { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-top: 4px; }
-        .contact-details-list { padding: 5px 20px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 6px; }
+        body { font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif; background-color: var(--bg-page); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px 10px; }
+
+        /* কার্ডের সাইজ বাড়ানো হয়েছে (Max-width: 400px) */
+        .vcard-wrapper { 
+            max-width: 400px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 28px; 
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1); 
+            overflow: hidden; 
+            position: relative; 
+            margin-bottom: 15px; 
+            background-color: #ffffff; 
+        }
+
+        .vcard-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); height: 110px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
+        .profile-pic-container { text-align: center; margin-top: -60px; position: relative; z-index: 10; }
         
-        /* Smooth Contact Box Style with 3D Hover */
+        /* প্রোফাইল পিকচার বড় করা হয়েছে */
+        .profile-pic { 
+            width: 125px; 
+            height: 125px; 
+            border-radius: 50%; 
+            border: 5px solid var(--white); 
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15); 
+            background: #e2e8f0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 0 auto; 
+            overflow: hidden; 
+        }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        .verified-badge { position: absolute; bottom: 5px; right: calc(50% - 55px); background: var(--accent); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--white); z-index: 15; }
+
+        .vcard-identity { text-align: center; padding: 15px 20px 10px; }
+        .vcard-name { font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+        .vcard-title { font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px;}
+        .vcard-company { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-top: 5px; }
+
+        .contact-details-list { padding: 10px 25px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        
         .contact-row { 
-            display: flex; align-items: center; background: #f8fafc; padding: 8px 12px; 
-            border-radius: 12px; border: 1px solid #f1f5f9; cursor: pointer;
+            display: flex; align-items: center; background: #f8fafc; padding: 12px 16px; 
+            border-radius: 16px; border: 1px solid #f1f5f9; cursor: pointer;
             transition: all 0.3s ease;
         }
         .contact-row:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(15, 23, 42, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
             background: var(--white);
-            border-color: #e2e8f0;
+            border-color: #cbd5e1;
         }
 
-        .contact-icon-box { width: 30px; height: 30px; border-radius: 8px; background: var(--white); color: var(--accent); display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 0.8rem; }
-        .contact-label { font-size: 0.55rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;}
-        .contact-value { font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-top: -2px;}
-        .action-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 20px; margin-bottom: 12px; }
+        .contact-icon-box { width: 36px; height: 36px; border-radius: 10px; background: var(--white); color: var(--accent); display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .contact-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;}
+        .contact-value { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-top: -1px;}
+
+        .action-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 25px; margin-bottom: 15px; }
         
-        /* Action Buttons with 3D Hover */
         .action-btn { 
-            text-align: center; text-decoration: none; padding: 10px 5px; border-radius: 10px; 
-            color: var(--white); font-weight: 700; font-size: 0.65rem; display: flex; 
-            flex-direction: column; align-items: center; gap: 4px;
+            text-align: center; text-decoration: none; padding: 12px 5px; border-radius: 14px; 
+            color: var(--white); font-weight: 700; font-size: 0.75rem; display: flex; 
+            flex-direction: column; align-items: center; gap: 6px;
             transition: all 0.3s ease;
         }
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        .action-btn:active {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+        .action-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
+        .action-btn i { font-size: 1.3rem; }
 
-        .action-btn i { font-size: 1.1rem; }
-        .btn-call { background: var(--primary); } .btn-wa { background: var(--success); } .btn-mail { background: #334155; } .btn-fb { background: var(--facebook); }
-        .save-contact-area { padding: 0 20px 15px; }
-        
-        /* Save Contact with 3D Hover */
+        .btn-call { background: var(--primary); } 
+        .btn-wa { background: var(--success); } 
+        .btn-mail { background: #334155; } 
+        .btn-fb { background: var(--facebook); }
+
+        .save-contact-area { padding: 0 25px 20px; }
         .btn-save { 
             width: 100%; background: var(--accent); color: var(--white); border: none; 
-            padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; 
+            padding: 15px; border-radius: 16px; font-weight: 700; font-size: 1.1rem; 
             cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            gap: 8px; text-decoration: none;
+            gap: 10px; text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.15);
         }
-        .btn-save:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
-        }
-        .btn-save:active {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 10px rgba(37, 99, 235, 0.2);
-        }
+        .btn-save:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(37, 99, 235, 0.3); }
 
-        .vcard-footer { text-align: center; padding: 12px 15px; background: #f8fafc; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid #f1f5f9; }
-        .footer-company { font-weight: 700; color: var(--primary); display: block; margin-bottom: 3px;}
-        .tools-container { width: 100%; max-width: 350px; }
-        
-        /* Download Button with 3D Hover */
+        .vcard-footer { text-align: center; padding: 15px 20px; background: #f8fafc; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid #f1f5f9; }
+        .footer-company { font-weight: 700; color: var(--primary); display: block; margin-bottom: 4px; font-size: 0.95rem;}
+
+        .tools-container { width: 100%; max-width: 400px; }
         .btn-download { 
             width: 100%; background: var(--primary); color: var(--white); border: none; 
-            padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: 700; 
+            padding: 15px; border-radius: 16px; font-size: 1rem; font-weight: 700; 
             cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            gap: 8px;
-            transition: all 0.3s ease;
+            gap: 10px; transition: all 0.3s ease;
         }
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
-            background: #000000;
-        }
+        .btn-download:hover { background: #000000; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
-        #toast { visibility: hidden; min-width: 180px; background-color: #0f172a; color: #fff; text-align: center; border-radius: 10px; padding: 12px; position: fixed; z-index: 1000; left: 50%; bottom: 20px; transform: translateX(-50%); font-size: 0.8rem; font-weight: 600; opacity: 0; transition: opacity 0.3s; }
+        #toast { visibility: hidden; min-width: 200px; background-color: #0f172a; color: #fff; text-align: center; border-radius: 12px; padding: 14px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 0.9rem; font-weight: 600; opacity: 0; transition: opacity 0.3s; }
         #toast.show { visibility: visible; opacity: 1; }
     </style>
 </head>
@@ -140,7 +151,6 @@
     <div class="tools-container"><button class="btn-download" onclick="downloadPNG()"><i class="fas fa-id-card"></i> Download Card Image</button></div>
     <div id="toast">Copied!</div>
     <script>
-        // কপি ফাংশন
         function copyToClipboard(text, label) {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.getElementById("toast");
@@ -148,11 +158,10 @@
                 setTimeout(() => { toast.className = ""; }, 2000);
             });
         }
-        // ছবি ডাউনলোড ফাংশন
         function downloadPNG() {
             const card = document.getElementById('vcardElement');
             const originalShadow = card.style.boxShadow; card.style.boxShadow = 'none';
-            html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff', borderRadius: 20 }).then(canvas => {
+            html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff', borderRadius: 28 }).then(canvas => {
                 const link = document.createElement('a'); link.download = 'Mahmudul_Hasan_vCard.png';
                 link.href = canvas.toDataURL(); link.click(); card.style.boxShadow = originalShadow;
             });
