@@ -6,385 +6,100 @@
 <title>Md. Zahid Hasan — Digital vCard</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root {
-    --navy:       #0f172a;
-    --navy-mid:   #1e3a8a;
-    --navy-light: #1d4ed8;
-    --sky:        #3b82f6;
-    --sky-pale:   #eff6ff;
-    --white:      #ffffff;
-    --off-white:  #f8fafc;
-    --text:       #0f172a;
-    --muted:      #64748b;
-    --border:     #e2e8f0;
-    --shadow-lg:  0 20px 50px rgba(15,23,42,0.12);
+    --navy:#0f172a;--navy-mid:#1e3a8a;--navy-light:#1d4ed8;
+    --sky:#3b82f6;--sky-pale:#eff6ff;--white:#ffffff;
+    --off-white:#f8fafc;--text:#0f172a;--muted:#64748b;
+    --border:#e2e8f0;--shadow-lg:0 20px 50px rgba(15,23,42,0.12);
   }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Outfit',sans-serif;background:#e8eef7;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:36px 16px 50px;position:relative;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(30,58,138,0.15) 0%,transparent 65%),radial-gradient(ellipse 50% 30% at 100% 100%,rgba(59,130,246,0.08) 0%,transparent 50%);pointer-events:none;}
+  .card{max-width:370px;width:100%;background:var(--white);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden;position:relative;z-index:1;animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .card-banner{height:130px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 55%,var(--navy-light) 100%);position:relative;overflow:hidden;}
+  .card-banner::before{content:'';position:absolute;width:220px;height:220px;border-radius:50%;border:40px solid rgba(255,255,255,0.04);top:-80px;right:-60px;}
+  .card-banner::after{content:'';position:absolute;width:140px;height:140px;border-radius:50%;border:30px solid rgba(255,255,255,0.04);bottom:-60px;left:-30px;}
+  .card-banner-line{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--sky),#60a5fa,var(--sky));}
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+  .qr-btn{position:absolute;top:10px;right:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:10px;padding:7px 12px;font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;backdrop-filter:blur(4px);transition:all .2s;}
+  .qr-btn:hover{background:rgba(255,255,255,0.25);}
+  .qr-btn i{font-size:0.85rem;}
 
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: #e8eef7;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 36px 16px 50px;
-    position: relative;
-  }
+  .qr-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.7);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+  .qr-overlay.active{display:flex;}
+  .qr-box{background:#fff;border-radius:20px;padding:28px 28px 20px;max-width:280px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(15,23,42,0.3);animation:fadeUp .3s ease both;}
+  .qr-title{font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:4px;}
+  .qr-sub{font-size:0.72rem;color:var(--muted);margin-bottom:18px;}
+  #qrcode{display:flex;justify-content:center;margin-bottom:16px;}
+  #qrcode canvas,#qrcode img{border-radius:10px;border:3px solid var(--sky-pale);}
+  .qr-close{background:var(--navy);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all .2s;}
+  .qr-close:hover{background:#0a0f1e;}
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(30,58,138,0.15) 0%, transparent 65%),
-      radial-gradient(ellipse 50% 30% at 100% 100%, rgba(59,130,246,0.08) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  .card {
-    max-width: 370px;
-    width: 100%;
-    background: var(--white);
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
-    animation: fadeUp .7s cubic-bezier(.22,1,.36,1) both;
-  }
-
-  @keyframes fadeUp {
-    from { opacity:0; transform:translateY(24px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-
-  .card-banner {
-    height: 130px;
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 55%, var(--navy-light) 100%);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card-banner::before {
-    content:'';
-    position:absolute;
-    width:220px; height:220px;
-    border-radius:50%;
-    border: 40px solid rgba(255,255,255,0.04);
-    top:-80px; right:-60px;
-  }
-  .card-banner::after {
-    content:'';
-    position:absolute;
-    width:140px; height:140px;
-    border-radius:50%;
-    border: 30px solid rgba(255,255,255,0.04);
-    bottom:-60px; left:-30px;
-  }
-
-  .card-banner-line {
-    position:absolute;
-    top:0; left:0; right:0;
-    height:3px;
-    background: linear-gradient(90deg, var(--sky), #60a5fa, var(--sky));
-  }
-
-  .avatar-wrap {
-    display:flex;
-    justify-content:center;
-    margin-top: -52px;
-    position:relative;
-    z-index:5;
-  }
-
-  .avatar-ring {
-    width:104px; height:104px;
-    border-radius:50%;
-    background: linear-gradient(135deg, var(--sky) 0%, var(--navy-light) 100%);
-    padding: 3px;
-    box-shadow: 0 8px 24px rgba(15,23,42,0.18);
-  }
-
-  .avatar-inner {
-    width:100%; height:100%;
-    border-radius:50%;
-    background: #c7d4e8;
-    border: 3px solid var(--white);
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:2rem;
-    font-weight:800;
-    color: var(--navy);
-    letter-spacing:-1px;
-  }
-
-  .avatar-inner img {
-    width:100%; height:100%; object-fit:cover; border-radius:50%;
-  }
-
-  .verified {
-    position:absolute;
-    bottom: 2px; right: calc(50% - 46px);
-    width:24px; height:24px;
-    background: var(--sky);
-    border:2.5px solid var(--white);
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:0.6rem; color:#fff;
-    box-shadow: 0 2px 6px rgba(59,130,246,0.4);
-  }
-
-  .identity {
-    text-align:center;
-    padding: 16px 24px 20px;
-  }
-
-  .id-name {
-    font-size:1.6rem;
-    font-weight:800;
-    color: var(--text);
-    letter-spacing:-0.5px;
-    line-height:1.1;
-  }
-
-  .id-role {
-    display:inline-block;
-    margin-top:8px;
-    background: var(--sky-pale);
-    color: var(--navy-light);
-    font-size:0.7rem;
-    font-weight:700;
-    letter-spacing:1.8px;
-    text-transform:uppercase;
-    padding:4px 14px;
-    border-radius:100px;
-    border:1px solid rgba(59,130,246,0.2);
-  }
-
-  .id-company {
-    margin-top:8px;
-    font-size:0.85rem;
-    color: var(--muted);
-    font-weight:400;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-  }
-  .id-company i { font-size:0.7rem; color: var(--sky); }
-
-  .divider {
-    height:1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 0 24px;
-  }
-
-  .quick-actions {
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:10px;
-    padding:18px 20px;
-  }
-
-  .qa-btn {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-    padding:14px 8px;
-    border-radius:14px;
-    text-decoration:none;
-    font-size:0.65rem;
-    font-weight:700;
-    letter-spacing:0.8px;
-    text-transform:uppercase;
-    transition:all .2s ease;
-    border:none;
-    cursor:pointer;
-    font-family:'Outfit',sans-serif;
-  }
-
-  .qa-btn i { font-size:1.15rem; }
-
-  .qa-call { background: var(--navy); color: #fff; box-shadow: 0 4px 14px rgba(15,23,42,0.18); }
-  .qa-wa   { background: #16a34a; color: #fff; box-shadow: 0 4px 14px rgba(22,163,74,0.2); }
-  .qa-mail { background: var(--off-white); color: var(--navy); border:1px solid var(--border); }
-
-  .qa-btn:hover  { transform:translateY(-2px); filter:brightness(1.05); }
-  .qa-btn:active { transform:scale(0.97); }
-
-  .section { padding: 0 20px 6px; }
-
-  .section-label {
-    font-size:0.6rem;
-    font-weight:700;
-    letter-spacing:2.5px;
-    text-transform:uppercase;
-    color: var(--muted);
-    padding: 14px 4px 10px;
-  }
-
-  .c-row {
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:11px 14px;
-    border-radius:12px;
-    cursor:pointer;
-    transition:background .15s;
-    margin-bottom:6px;
-  }
-  .c-row:hover  { background: var(--sky-pale); }
-  .c-row:active { background: #dbeafe; }
-
-  .c-icon-box {
-    width:38px; height:38px;
-    border-radius:10px;
-    background: var(--navy);
-    display:flex; align-items:center; justify-content:center;
-    color:#fff;
-    font-size:0.9rem;
-    flex-shrink:0;
-    box-shadow: 0 3px 8px rgba(15,23,42,0.15);
-  }
-
-  .c-texts { flex:1; }
-  .c-lbl {
-    font-size:0.58rem;
-    font-weight:700;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    color:var(--muted);
-  }
-  .c-val {
-    font-size:0.92rem;
-    font-weight:600;
-    color:var(--text);
-    margin-top:1px;
-  }
-
-  .copy-ico { color:#cbd5e1; font-size:0.8rem; }
-
-  .save-wrap { padding:16px 20px; }
-
-  .btn-save {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    width:100%;
-    padding:14px;
-    background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy-mid) 100%);
-    color:#fff;
-    border:none;
-    border-radius:14px;
-    font-family:'Outfit',sans-serif;
-    font-size:0.9rem;
-    font-weight:700;
-    cursor:pointer;
-    text-decoration:none;
-    box-shadow: 0 8px 20px rgba(29,78,216,0.25);
-    transition:all .25s;
-  }
-  .btn-save:hover { transform:translateY(-1px); box-shadow:0 12px 28px rgba(29,78,216,0.3); }
-
-  .links-wrap { padding:0 20px 20px; display:flex; flex-direction:column; gap:8px; }
-
-  .lnk {
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:13px 14px;
-    border-radius:12px;
-    border:1px solid var(--border);
-    text-decoration:none;
-    transition:all .2s;
-    background:var(--white);
-  }
-  .lnk:hover {
-    border-color: #93c5fd;
-    background: var(--sky-pale);
-    transform:translateX(3px);
-  }
-
-  .lnk-icon {
-    width:38px; height:38px;
-    border-radius:10px;
-    display:flex; align-items:center; justify-content:center;
-    color:#fff;
-    font-size:0.95rem;
-    flex-shrink:0;
-  }
-  .li-linkedin { background: #0077b5; }
-  .li-fb       { background: #1877f2; }
-  .li-web      { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); }
-
-  .lnk-texts { flex:1; }
-  .lnk-title { font-size:0.88rem; font-weight:700; color:var(--text); }
-  .lnk-sub   { font-size:0.7rem;  color:var(--muted); margin-top:1px; }
-  .lnk-arr   { color:#94a3b8; font-size:0.8rem; }
-
-  .card-footer {
-    background: var(--off-white);
-    border-top:1px solid var(--border);
-    text-align:center;
-    padding:13px;
-    font-size:0.72rem;
-    color:var(--muted);
-    font-weight:500;
-    letter-spacing:0.5px;
-  }
-
-  .dl-wrap {
-    max-width:370px; width:100%;
-    margin-top:14px;
-    z-index:1;
-    animation: fadeUp .85s cubic-bezier(.22,1,.36,1) both;
-  }
-
-  .btn-dl {
-    width:100%;
-    padding:14px;
-    background: var(--navy);
-    color:#fff;
-    border:none;
-    border-radius:14px;
-    font-family:'Outfit',sans-serif;
-    font-size:0.85rem;
-    font-weight:700;
-    cursor:pointer;
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    box-shadow: 0 8px 24px rgba(15,23,42,0.2);
-    transition:all .25s;
-  }
-  .btn-dl:hover { background:#0a0f1e; transform:translateY(-1px); }
-
-  #toast {
-    visibility:hidden; opacity:0;
-    position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
-    background: var(--navy); color:#60a5fa;
-    font-size:0.78rem; font-weight:600;
-    padding:11px 22px; border-radius:100px;
-    box-shadow:0 8px 24px rgba(15,23,42,0.25);
-    z-index:999; transition:all .3s; white-space:nowrap;
-  }
-  #toast.show { visibility:visible; opacity:1; bottom:42px; }
+  .avatar-wrap{display:flex;justify-content:center;margin-top:-52px;position:relative;z-index:5;}
+  .avatar-ring{width:104px;height:104px;border-radius:50%;background:linear-gradient(135deg,var(--sky) 0%,var(--navy-light) 100%);padding:3px;box-shadow:0 8px 24px rgba(15,23,42,0.18);}
+  .avatar-inner{width:100%;height:100%;border-radius:50%;background:#c7d4e8;border:3px solid var(--white);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:var(--navy);letter-spacing:-1px;}
+  .avatar-inner img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+  .verified{position:absolute;bottom:2px;right:calc(50% - 46px);width:24px;height:24px;background:var(--sky);border:2.5px solid var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#fff;box-shadow:0 2px 6px rgba(59,130,246,0.4);}
+  .identity{text-align:center;padding:16px 24px 20px;}
+  .id-name{font-size:1.6rem;font-weight:800;color:var(--text);letter-spacing:-0.5px;line-height:1.1;}
+  .id-role{display:inline-block;margin-top:8px;background:var(--sky-pale);color:var(--navy-light);font-size:0.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:4px 14px;border-radius:100px;border:1px solid rgba(59,130,246,0.2);}
+  .id-company{margin-top:8px;font-size:0.85rem;color:var(--muted);font-weight:400;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .id-company i{font-size:0.7rem;color:var(--sky);}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 24px;}
+  .quick-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:18px 20px;}
+  .qa-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px 8px;border-radius:14px;text-decoration:none;font-size:0.65rem;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;transition:all .2s ease;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+  .qa-btn i{font-size:1.15rem;}
+  .qa-call{background:var(--navy);color:#fff;box-shadow:0 4px 14px rgba(15,23,42,0.18);}
+  .qa-wa{background:#16a34a;color:#fff;box-shadow:0 4px 14px rgba(22,163,74,0.2);}
+  .qa-mail{background:var(--off-white);color:var(--navy);border:1px solid var(--border);}
+  .qa-linkedin{background:#0077b5;color:#fff;box-shadow:0 4px 14px rgba(0,119,181,0.2);}
+  .qa-fb{background:#1877f2;color:#fff;box-shadow:0 4px 14px rgba(24,119,242,0.2);}
+  .qa-web{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);color:#fff;box-shadow:0 4px 14px rgba(15,23,42,0.18);}
+  .qa-btn:hover{transform:translateY(-2px);filter:brightness(1.05);}
+  .qa-btn:active{transform:scale(0.97);}
+  .section{padding:0 20px 6px;}
+  .section-label{font-size:0.6rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);padding:14px 4px 10px;}
+  .c-row{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:12px;cursor:pointer;transition:background .15s;margin-bottom:6px;}
+  .c-row:hover{background:var(--sky-pale);}
+  .c-row:active{background:#dbeafe;}
+  .c-icon-box{width:38px;height:38px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.9rem;flex-shrink:0;box-shadow:0 3px 8px rgba(15,23,42,0.15);}
+  .c-texts{flex:1;}
+  .c-lbl{font-size:0.58rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+  .c-val{font-size:0.92rem;font-weight:600;color:var(--text);margin-top:1px;}
+  .copy-ico{color:#cbd5e1;font-size:0.8rem;}
+  .save-wrap{padding:16px 20px;}
+  .btn-save{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:linear-gradient(135deg,var(--navy-light) 0%,var(--navy-mid) 100%);color:#fff;border:none;border-radius:14px;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 8px 20px rgba(29,78,216,0.25);transition:all .25s;}
+  .btn-save:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(29,78,216,0.3);}
+  .card-footer{background:var(--off-white);border-top:1px solid var(--border);text-align:center;padding:13px;font-size:0.72rem;color:var(--muted);font-weight:500;letter-spacing:0.5px;}
+  .dl-wrap{max-width:370px;width:100%;margin-top:14px;z-index:1;animation:fadeUp .85s cubic-bezier(.22,1,.36,1) both;}
+  .btn-dl{width:100%;padding:14px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(15,23,42,0.2);transition:all .25s;}
+  .btn-dl:hover{background:#0a0f1e;transform:translateY(-1px);}
+  #toast{visibility:hidden;opacity:0;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--navy);color:#60a5fa;font-size:0.78rem;font-weight:600;padding:11px 22px;border-radius:100px;box-shadow:0 8px 24px rgba(15,23,42,0.25);z-index:999;transition:all .3s;white-space:nowrap;}
+  #toast.show{visibility:visible;opacity:1;bottom:42px;}
+  .connect-label{font-size:0.6rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);padding:14px 24px 4px;}
+  .connect-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:10px 20px 18px;}
 </style>
 </head>
 <body>
 
-<div class="card" id="vcardEl">
+<div class="qr-overlay" id="qrOverlay" onclick="closeQR(event)">
+  <div class="qr-box">
+    <div class="qr-title">Scan to Connect</div>
+    <div class="qr-sub">Md. Zahid Hasan — vCard</div>
+    <div id="qrcode"></div>
+    <button class="qr-close" onclick="document.getElementById('qrOverlay').classList.remove('active')">Close</button>
+  </div>
+</div>
 
+<div class="card" id="vcardEl">
   <div class="card-banner">
     <div class="card-banner-line"></div>
+    <button class="qr-btn" onclick="showQR()">
+      <i class="fas fa-qrcode"></i> QR Code
+    </button>
   </div>
 
   <div class="avatar-wrap">
@@ -415,7 +130,6 @@
 
   <div class="section">
     <div class="section-label">Contact Info</div>
-
     <div class="c-row" onclick="copy('01711183109','Mobile Number')">
       <div class="c-icon-box"><i class="fas fa-mobile-alt"></i></div>
       <div class="c-texts">
@@ -424,7 +138,6 @@
       </div>
       <i class="far fa-copy copy-ico"></i>
     </div>
-
     <div class="c-row" onclick="copy('01733369668','Office Number')">
       <div class="c-icon-box" style="background:var(--navy-mid)"><i class="fas fa-building"></i></div>
       <div class="c-texts">
@@ -433,7 +146,6 @@
       </div>
       <i class="far fa-copy copy-ico"></i>
     </div>
-
     <div class="c-row" onclick="copy('zahidhasan1118@gmail.com','Email Address')">
       <div class="c-icon-box" style="background:var(--navy-light)"><i class="fas fa-envelope"></i></div>
       <div class="c-texts">
@@ -452,92 +164,59 @@
 
   <div class="divider"></div>
 
-  <div class="links-wrap">
-    <div class="section-label" style="padding:14px 4px 10px;">Connect</div>
-
-    <a href="https://linkedin.com/in/zahidhasan1118" target="_blank" class="lnk">
-      <div class="lnk-icon li-linkedin"><i class="fab fa-linkedin-in"></i></div>
-      <div class="lnk-texts">
-        <div class="lnk-title">Professional Profile</div>
-        <div class="lnk-sub">linkedin.com/in/zahidhasan1118</div>
-      </div>
-      <div class="lnk-arr"><i class="fas fa-chevron-right"></i></div>
-    </a>
-
-    <a href="https://www.facebook.com/zahidhasan1118" target="_blank" class="lnk">
-      <div class="lnk-icon li-fb"><i class="fab fa-facebook-f"></i></div>
-      <div class="lnk-texts">
-        <div class="lnk-title">Facebook</div>
-        <div class="lnk-sub">facebook.com/zahidhasan1118</div>
-      </div>
-      <div class="lnk-arr"><i class="fas fa-chevron-right"></i></div>
-    </a>
-
-    <a href="https://www.acharkingbd.com" target="_blank" class="lnk">
-      <div class="lnk-icon li-web"><i class="fas fa-globe"></i></div>
-      <div class="lnk-texts">
-        <div class="lnk-title">Achar King</div>
-        <div class="lnk-sub">www.acharkingbd.com</div>
-      </div>
-      <div class="lnk-arr"><i class="fas fa-chevron-right"></i></div>
-    </a>
+  <div class="connect-label">Connect</div>
+  <div class="connect-grid">
+    <a href="https://linkedin.com/in/zahidhasan1118" target="_blank" class="qa-btn qa-linkedin"><i class="fab fa-linkedin-in"></i>LinkedIn</a>
+    <a href="https://www.facebook.com/zahidhasan1118" target="_blank" class="qa-btn qa-fb"><i class="fab fa-facebook-f"></i>Facebook</a>
+    <a href="https://www.acharkingbd.com" target="_blank" class="qa-btn qa-web"><i class="fas fa-globe"></i>Website</a>
   </div>
 
   <div class="card-footer">
     <i class="fas fa-map-marker-alt"></i>&nbsp; Nazipur, Naogaon — 6540
   </div>
-
-</div>
-
-<div class="dl-wrap">
-  <button class="btn-dl" onclick="downloadPNG()">
-    <i class="fas fa-id-card"></i> Download vCard Image
-  </button>
 </div>
 
 <div id="toast"></div>
 
 <script>
+var qrGenerated = false;
+
+function showQR() {
+  document.getElementById('qrOverlay').classList.add('active');
+  if (!qrGenerated) {
+    new QRCode(document.getElementById('qrcode'), {
+      text: 'BEGIN:VCARD\nVERSION:3.0\nFN:Md. Zahid Hasan\nORG:Alliance Consortium Ltd.\nTITLE:Deputy Manager (Admin)\nTEL;TYPE=CELL:+8801711183109\nTEL;TYPE=WORK:+8801733369668\nEMAIL:zahidhasan1118@gmail.com\nURL:https://www.acharkingbd.com\nADR;TYPE=WORK:;;Nazipur;Naogaon;;6540;Bangladesh\nEND:VCARD',
+      width: 200, height: 200,
+      colorDark: '#0f172a', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    qrGenerated = true;
+  }
+}
+
+function closeQR(e) {
+  if (e.target === document.getElementById('qrOverlay')) {
+    document.getElementById('qrOverlay').classList.remove('active');
+  }
+}
+
 function copy(text, label) {
-  navigator.clipboard.writeText(text).then(() => {
-    const t = document.getElementById('toast');
-    t.innerHTML = `<i class="fas fa-check-circle"></i>&nbsp; ${label} Copied!`;
+  navigator.clipboard.writeText(text).then(function() {
+    var t = document.getElementById('toast');
+    t.innerHTML = '<i class="fas fa-check-circle"></i>&nbsp; ' + label + ' Copied!';
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2400);
+    setTimeout(function(){ t.classList.remove('show'); }, 2400);
   });
 }
 
 function saveVCF(e) {
   e.preventDefault();
-  const vcf = [
-    'BEGIN:VCARD',
-    'VERSION:3.0',
-    'FN:Md. Zahid Hasan',
-    'N:Hasan;Zahid;;Md.;',
-    'ORG:Alliance Consortium Ltd.',
-    'TITLE:Deputy Manager (Admin)',
-    'TEL;TYPE=CELL:+8801711183109',
-    'TEL;TYPE=WORK:+8801733369668',
-    'EMAIL:zahidhasan1118@gmail.com',
-    'URL:https://www.acharkingbd.com',
-    'ADR;TYPE=WORK:;;Nazipur;Naogaon;;6540;Bangladesh',
-    'END:VCARD'
-  ].join('\n');
-  const blob = new Blob([vcf], { type: 'text/vcard' });
-  const a = document.createElement('a');
+  var vcf = ['BEGIN:VCARD','VERSION:3.0','FN:Md. Zahid Hasan','N:Hasan;Zahid;;Md.;','ORG:Alliance Consortium Ltd.','TITLE:Deputy Manager (Admin)','TEL;TYPE=CELL:+8801711183109','TEL;TYPE=WORK:+8801733369668','EMAIL:zahidhasan1118@gmail.com','URL:https://www.acharkingbd.com','ADR;TYPE=WORK:;;Nazipur;Naogaon;;6540;Bangladesh','END:VCARD'].join('\n');
+  var blob = new Blob([vcf], {type:'text/vcard'});
+  var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'Zahid_Hasan.vcf';
   a.click();
-}
-
-function downloadPNG() {
-  const card = document.getElementById('vcardEl');
-  html2canvas(card, { scale:3, useCORS:true, backgroundColor:'#ffffff' }).then(canvas => {
-    const a = document.createElement('a');
-    a.download = 'Zahid_Hasan_vCard.png';
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-  });
 }
 </script>
 </body>
